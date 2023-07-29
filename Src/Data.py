@@ -21,6 +21,6 @@ def get_data(currencies):
     df = df.pivot(index='effectiveDate', columns='currency', values='mid')
     df.reset_index(inplace=True)
     df = df.drop(index=0)
-    df.columns = ['Date','CHF','EUR','GBP','NOK','USD']
+    df.columns = ['Date',*currencies]
 
     return df

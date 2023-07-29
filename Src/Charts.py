@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import os
 
 def plot_exchange_rate(currencies, df):
     min_date = df['Date'].min()
@@ -15,11 +16,18 @@ def plot_exchange_rate(currencies, df):
     dates.sort()
 
     sns.set(style="darkgrid")
-    for currency in currencies:
-        sns.lineplot(data=df, x='Date', y=currency)
-        plt.xlabel('Date')
-        plt.ylabel(f'Exchange rate ({currency}/PLN)')
-        plt.title(f'Exchange rate of {currency} against PLN over the last year')
-        plt.xticks(range(1,(len(dates)) * 50,50),dates)
-        plt.show()
+
+    fig, axs = plt.subplots(2, 3, figsize=(15, 10))
+    for i, currency in enumerate(currencies):
+        sns.lineplot(data=df, x='Date', y=currency, ax=axs[i // 3][i % 3])
+        axs[i // 3][i % 3].set_xlabel('Date')
+        axs[i // 3][i % 3].set_ylabel(f'Exchange rate ({currency}/PLN)')
+        axs[i // 3][i % 3].set_title(f'Exchange rate of {currency} against PLN over the last year')
+        axs[i // 3][i % 3].set_xticks(range(1, (len(dates)) * 50, 50))
+        axs[i // 3][i % 3].set_xticklabels(dates, fontsize=8)
+
+    plt.tight_layout()
+    plt.savefig("./Src/Files/historical_exchange_rate.pdf")
+    plt.show()
+
 
