@@ -31,3 +31,10 @@ def plot_exchange_rate(currencies, df):
     plt.show()
 
 
+def matrix_correlaton(df):
+    df.drop('Date', axis=1, inplace=True)
+    correlation_matrix = df.corr()
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True)
+    plt.title('Macierz korelacji')
+    plt.savefig("./Src/Files/Correlation_matrix.pdf")
+    plt.show()
