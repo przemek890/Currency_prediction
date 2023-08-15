@@ -1,26 +1,26 @@
 import pandas as pd
-from datetime import datetime, timedelta
 import requests
-""""""
-
+import os
+""""""""
 def get_data(currencies):
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=365)
-
-    df = pd.DataFrame()
-
     for currency in currencies:
-        url = f'http://api.nbp.pl/api/exchangerates/rates/A/{currency}/{start_date.strftime("%Y-%m-%d")}/{end_date.strftime("%Y-%m-%d")}/'
-        response = requests.get(url)
-        data = response.json()
-        rates = data['rates']
-        temp_df = pd.DataFrame(rates)
-        temp_df['currency'] = currency
-        df = pd.concat([df, temp_df])
+        csv_url = f"https://stooq.pl/q/d/l/?s={currency}&i=d"  # Adres URL do pobrania pliku CSV
 
-    df = df.pivot(index='effectiveDate', columns='currency', values='mid')
-    df.reset_index(inplace=True)
-    df = df.drop(index=0)
-    df.columns = ['Date',*currencies]
+        response = requests.get(csv_url)  # Wykonaj żądanie GET i pobierz zawartość pliku CSV
+        csv_content = response.content
 
-    return df
+        file_path = os.path.join(os.getcwd(), f"Src/Exchange_rates/{currency}.csv")  # Zapisz zawartość pliku CSV w katalogu projektu
+        with open(file_path, "wb") as csv_file:
+            csv_file.write(csv_content)
+        print(f"Plik CSV został pomyślnie pobrany i zapisany jako {currency}.csv")
+def create_dataframe_list_from_csv(path):
+    dataframe_list = []                             # zwracamy słownik postaci 'nokpln' : df itp...
+
+    for filename in os.listdir(path):
+        if filename.endswith(".csv"):
+            file_path = os.path.join(path, filename)
+            df = pd.read_csv(file_path)
+            word = {os.path.splitext(filename)[0] : df}
+            dataframe_list.append(word)
+
+    return dataframe_list
