@@ -9,7 +9,7 @@ def get_data(currencies):
         response = requests.get(csv_url)  # Wykonaj żądanie GET i pobierz zawartość pliku CSV
         csv_content = response.content
 
-        file_path = os.path.join(os.getcwd(), f"Src/Exchange_rates/{currency}.csv")  # Zapisz zawartość pliku CSV w katalogu projektu
+        file_path = os.path.join(os.getcwd(), f"Exchange_rates/{currency}.csv")  # Zapisz zawartość pliku CSV w katalogu projektu
         with open(file_path, "wb") as csv_file:
             csv_file.write(csv_content)
         print(f"The CSV file was successfully downloaded and saved as {currency}.csv")
