@@ -52,7 +52,7 @@ def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=1
                                      f"{pattern['Prediction']}\n"
                                      f"{pattern['Date']}",
                                      xy=(candle_x, candle_y),
-                                     xytext=(candle_x, candle_y + 0.01 * avg),
+                                     xytext=(candle_x, candle_y + 0.005 * avg),
                                      fontsize=5,
                                      ha="center",
                                      fontweight='bold',

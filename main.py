@@ -7,19 +7,18 @@ from Src.Patterns import PatternDetector
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 if __name__ == '__main__':
     currencies = ['chfpln','eurpln','gbppln','jpypln','nokpln','usdpln']            # Analizowane pary walut
-    date_start = pd.to_datetime('2023-05-01')                                       # Data startu -> default 100 dni temu
-    date_end = pd.to_datetime('2023-08-01')                                         # Data końca -> defaultowo dziś
+    date_start = pd.to_datetime('2020-06-01')                                       # Data startu -> default 100 dni temu
+    date_end = pd.to_datetime('2020-08-01')                                         # Data końca -> defaultowo dziś
 
     get_data(currencies)                                                            # Pobierz aktualne dane dotyczące kursów walut i zapisz [raz na dzien -> dla danej daty]
     df_list = create_dataframe_list_from_csv(os.getcwd() + '/Exchange_rates')       # Utwórz listę dataframe'ów z plików csv /// zwracamy słownik postaci 'nokpln' : df
     create_currencies_raport(df_list)                                               # Krótki raport o dataframe'ach
-    matrix_correlaton(df_list)                                                      # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
+    matrix_correlaton(df_list,date_start,date_end)                                                      # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
 
     """Wyszukiwanie patternów w danym okresie czasowy"""
     dt = PatternDetector()
-    dt.detect_hangman(df_list)
-    dt.detect_hammer(df_list)
-    dt.detect_head_and_shoulders(df_list)
+    dt.hangman(df_list)
+    dt.hammer(df_list)
     dt.create_patterns_raport()
 
     candle_chart(df_list,dt.get_patterns(),dt.get_colors())      # Wykresy świecowe w danym okresie czasu
