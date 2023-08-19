@@ -2,28 +2,29 @@ import os
 import pandas as pd
 from Src.Data import get_data , create_dataframe_list_from_csv
 from Src.Plot import matrix_correlaton, candle_chart
-from Src.Settings import create_raport , list_patterns
-from Src.Patterns import detect_head_and_shoulders, detect_hammer, detect_hangman
+from Src.Settings import create_currencies_raport
+from Src.Patterns import PatternDetector
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 if __name__ == '__main__':
     currencies = ['chfpln','eurpln','gbppln','jpypln','nokpln','usdpln']            # Analizowane pary walut
-    colors = {"Head and Shoulders": "red","Hammer": "blue","Hangman": "green"}      # Kolory strzałek wzorów
     date_start = pd.to_datetime('2023-05-01')                                       # Data startu -> default 100 dni temu
     date_end = pd.to_datetime('2023-08-01')                                         # Data końca -> defaultowo dziś
-    patterns = []                                                                   # Znalezione patterny
 
     get_data(currencies)                                                            # Pobierz aktualne dane dotyczące kursów walut i zapisz [raz na dzien -> dla danej daty]
-    df_list = create_dataframe_list_from_csv(os.getcwd() + '/Exchange_rates')       # Utwórz listę dataframe'ów z plików csv /// zwracamy słownik postaci 'nokpln' : df_1
-    create_raport(df_list)                                                          # Krótki raport o dataframe'ach
+    df_list = create_dataframe_list_from_csv(os.getcwd() + '/Exchange_rates')       # Utwórz listę dataframe'ów z plików csv /// zwracamy słownik postaci 'nokpln' : df
+    create_currencies_raport(df_list)                                               # Krótki raport o dataframe'ach
     matrix_correlaton(df_list)                                                      # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
 
     """Wyszukiwanie patternów w danym okresie czasowy"""
-    detect_head_and_shoulders(df_list,patterns)
-    detect_hammer(df_list,patterns)
-    detect_hangman(df_list,patterns)
+    dt = PatternDetector()
+    dt.detect_hangman(df_list)
+    dt.detect_hammer(df_list)
+    dt.detect_head_and_shoulders(df_list)
+    dt.create_patterns_raport()
 
-    candle_chart(df_list,patterns,colors)                                           # Wykresy świecowe w danym okresie czasu
-    list_patterns(patterns)                                                         # Raport o wykrytych patternach
+    candle_chart(df_list,dt.get_patterns(),dt.get_colors())      # Wykresy świecowe w danym okresie czasu
+
+
 
 
 

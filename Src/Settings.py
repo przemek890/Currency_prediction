@@ -1,6 +1,6 @@
 import os
 import re
-def create_raport(df_list):
+def create_currencies_raport(df_list):
     with open(os.getcwd() + '/Documents/Raports/currencies.txt', 'w') as report_file:
         for iter in df_list:
             for currency, df in iter.items():
@@ -14,15 +14,6 @@ def create_raport(df_list):
                 report_file.write(str(df_desc) + '\n\n')
 
                 report_file.write("-------------------------------------\n")
-
-def list_patterns(patterns):
-    with open(os.getcwd() + '/Documents/Raports/patterns.txt', 'w') as report_file:
-        for iter in patterns:
-            report_file.write("-------------------------------------\n")
-            for key,value in iter.items():
-                report_file.write(str(value) + '\n')
-            report_file.write("-------------------------------------\n")
-
 def remove_all_files(folder_path,pattern):
     files = os.listdir(folder_path)
     for file_name in files:
