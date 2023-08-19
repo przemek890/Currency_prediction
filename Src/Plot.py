@@ -4,51 +4,50 @@ import seaborn as sns
 import pandas as pd
 import mplfinance as mpf
 import os
-""""""""
-def matrix_correlaton(df_list,period):
+""""""""""""""
+def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=datetime.now()):   # okres od wskazanej daty
     new_df = pd.DataFrame()
 
     for iter in df_list:
         for currency, df in iter.items():
-            time = datetime.now() - timedelta(days=period)
-            filtered_df = df[df['Date'] >= time.strftime('%Y-%m-%d')]
-            filtered_df = filtered_df.reset_index(drop=True)
+            df = df.copy()
+            df['Date'] = pd.to_datetime(df['Date'])
+            df.set_index('Date', inplace=True)
+            filtered_df = df[(df.index >= start) & (df.index <= end)]
+
             new_df[f'{currency}'] = (filtered_df['Open'] + filtered_df['Close']) / 2
 
     correlation_matrix = new_df.corr()
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True)
-    plt.title(f'Exchange rate correlation {period} days')
+    plt.title(f'Exchange rate correlation from {start.date()} to {end.date()}')
 
-    if not os.path.exists(os.getcwd() + f"/Documents/Charts/{period}-Days"):
-        os.makedirs(os.getcwd() + f"/Documents/Charts/{period}-Days")
+    if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
+        os.makedirs(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}")
 
-    plt.savefig(os.getcwd() + f"/Documents/Charts/{period}-Days/Correlation_matrix_{period}_days.pdf")
+    plt.savefig(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}/Correlation_matrix_{start.date()}_{end.date()}.pdf")
 
     plt.show()
-
-
-def candle_chart(df_list,period,patterns,colors):
+def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=100),end=datetime.now()):
 
     for iter in df_list:
         for currency, df in iter.items():
 
+            df = df.copy()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
-            time = df.index[-1] - pd.DateOffset(days=period)
-            df_time = df[df.index >= time]
+            df_time = df[(df.index >= start) & (df.index <= end)]
 
-            fig, axes =  mpf.plot(df_time, type='candle', title=f'\n\nCandlestick Chart - {currency} - {period} days',returnfig=True)
+            fig, axes =  mpf.plot(df_time, type='candle', title=f'\n\nCandlestick Chart - {currency} -> {start.date()}_{end.date()}',returnfig=True)
 
             for pattern in patterns:
                 pattern_date = pd.to_datetime(pattern['Date'])
-                if pattern_date >= time:
-                    pattern_index = df_time.index.get_loc(pattern_date)
-                    candle_x = pattern_index # Środek świecy
-                    candle_y = pattern['High']
+                pattern_index = df_time.index.get_loc(pattern_date)
+                candle_x = pattern_index
+                candle_y = pattern['High']
 
-                    avg = 0.5 * (df['High'].max() + df['Low'].min())
+                avg = 0.5 * (df['High'].max() + df['Low'].min())
 
-                    axes[0].annotate(f"{pattern['Name']}\n"
+                axes[0].annotate(f"{pattern['Name']}\n"
                                      f"{pattern['Low']}-{pattern['High']}\n"
                                      f"{pattern['Prediction']}\n"
                                      f"{pattern['Date']}",
@@ -58,11 +57,11 @@ def candle_chart(df_list,period,patterns,colors):
                                      ha="center",
                                      fontweight='bold',
                                      color=colors[pattern['Name']],
-                                     arrowprops=dict(facecolor=colors[pattern['Name']], arrowstyle='fancy,tail_width=0.75')
-                                     )
-            if not os.path.exists(os.getcwd() + f"/Documents/Charts/{period}-Days"):
-                os.makedirs(os.getcwd() + f"/Documents/Charts/{period}-Days")
-            output_path = os.path.join(os.getcwd() + f"/Documents/Charts/{period}-Days/Candlestick_Chart_{currency}_{period}_days.pdf")
+                                     arrowprops=dict(facecolor=colors[pattern['Name']], arrowstyle='fancy,tail_width=0.75'))
+
+            if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
+                os.makedirs(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}")
+            output_path = os.path.join(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}/Candlestick_Chart_{currency}_{start.date()}_{end.date()}.pdf")
             plt.savefig(output_path)
 
             plt.grid()
