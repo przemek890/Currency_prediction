@@ -1,10 +1,11 @@
 import pandas as pd
 
-def detect_head_and_shoulders(df_list,period):
-    patterns = []
+# TODO: Sprawdzić czy dobrze napisany if
+def detect_head_and_shoulders(df_list,period,patterns):
 
     for iter in df_list:
         for currency, df in iter.items():
+            df = df.copy()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
             recent_data = df.tail(period)
@@ -29,5 +30,56 @@ def detect_head_and_shoulders(df_list,period):
                         'Low': recent_data['Low'][i],
                         'Prediction': 'Bessa'
                     })
+def detect_hammer(df_list, period, patterns):
+    for iter in df_list:
+        for currency, df in iter.items():
+            df = df.copy()
+            df['Date'] = pd.to_datetime(df['Date'])
+            df.set_index('Date', inplace=True)
+            recent_data = df.tail(period)
+            for i in range(2, len(recent_data) - 2):
+                total_range = recent_data['High'][i] - recent_data['Low'][i]
+                if (
+                        recent_data['Close'][i] > recent_data['Open'][i] and
+                        recent_data['Close'][i] -  recent_data['Open'][i] < 0.5 * (recent_data['Open'][i] -  recent_data['Low'][i]) and
+                        recent_data['High'][i] - recent_data['Close'][i] < 0.05 * total_range
 
-    return patterns
+                ):
+                    timestamp = recent_data.index[i]
+                    date = timestamp.strftime('%Y-%m-%d')
+
+                    patterns.append({
+                        'Name': 'Hammer',
+                        'Currency': f'{currency}',
+                        'Date': date,
+                        'High': recent_data['High'][i],
+                        'Low': recent_data['Low'][i],
+                        'Prediction': 'Hossa'
+                    })
+def detect_hangman(df_list, period, patterns):
+    for iter in df_list:
+        for currency, df in iter.items():
+            df = df.copy()
+            df['Date'] = pd.to_datetime(df['Date'])
+            df.set_index('Date', inplace=True)
+            recent_data = df.tail(period)
+            for i in range(2, len(recent_data) - 2):
+                total_range = recent_data['High'][i] - recent_data['Low'][i]
+                if (
+                        recent_data['Open'][i] > recent_data['CLose'][i] and
+                        recent_data['Open'][i] -  recent_data['CLose'][i] < 0.5 * (recent_data['Open'][i] -  recent_data['Low'][i]) and
+                        recent_data['High'][i] - recent_data['Close'][i] < 0.05 * total_range
+
+                ):
+                    timestamp = recent_data.index[i]
+                    date = timestamp.strftime('%Y-%m-%d')
+
+                    patterns.append({
+                        'Name': 'Hangman',
+                        'Currency': f'{currency}',
+                        'Date': date,
+                        'High': recent_data['High'][i],
+                        'Low': recent_data['Low'][i],
+                        'Prediction': 'Bessa'
+                    })
+
