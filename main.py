@@ -17,10 +17,10 @@ if __name__ == '__main__':
     create_raport(df_list)                                                          # Krótki raport o dataframe'ach
     matrix_correlaton(df_list)                                                      # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
 
-
-   # detect_head_and_shoulders(df_list,period,patterns)                             # Wyszukiwanie patternów w danym okresie czasowy
-   #  detect_hammer(df_list,patterns,pd.to_datetime('2023-05-01'))
-   #  detect_hangman(df_list,patterns,pd.to_datetime('2023-05-01'))
+    """Wyszukiwanie patternów w danym okresie czasowy"""
+    detect_head_and_shoulders(df_list,patterns)
+    detect_hammer(df_list,patterns)
+    detect_hangman(df_list,patterns)
 
     candle_chart(df_list,patterns,colors)                                           # Wykresy świecowe w danym okresie czasu
     list_patterns(patterns)                                                         # Raport o wykrytych patternach

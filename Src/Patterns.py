@@ -2,14 +2,13 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 # TODO: Sprawdzić czy dobrze napisany if
-def detect_head_and_shoulders(df_list,patterns,start=datetime.now() - timedelta(days=14),end=datetime.now()):
+def detect_head_and_shoulders(df_list,patterns,start=datetime.now() - timedelta(days=100),end=datetime.now()):
     for iter in df_list:
         for currency, df in iter.items():
             df = df.copy()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
-            time = end - start
-            recent_data = df[df.index >= time]
+            recent_data = df[(df.index >= start) & (df.index <= end)]
 
             for i in range(2, len(recent_data) - 2):
                 if (
@@ -32,14 +31,13 @@ def detect_head_and_shoulders(df_list,patterns,start=datetime.now() - timedelta(
                         'Low': recent_data['Low'][i],
                         'Prediction': 'Bessa'
                     })
-def detect_hammer(df_list, patterns,start=datetime.now() - timedelta(days=14),end=datetime.now()):
+def detect_hammer(df_list, patterns,start=datetime.now() - timedelta(days=100),end=datetime.now()):
     for iter in df_list:
         for currency, df in iter.items():
             df = df.copy()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
-            time = end - start
-            recent_data = df[df.index >= time]
+            recent_data = df[(df.index >= start) & (df.index <= end)]
 
             for i in range(2, len(recent_data) - 2):
                 total_range = recent_data['High'][i] - recent_data['Low'][i]
@@ -60,14 +58,13 @@ def detect_hammer(df_list, patterns,start=datetime.now() - timedelta(days=14),en
                         'Low': recent_data['Low'][i],
                         'Prediction': 'Hossa'
                     })
-def detect_hangman(df_list, patterns,start=datetime.now() - timedelta(days=14),end=datetime.now()):
+def detect_hangman(df_list, patterns,start=datetime.now() - timedelta(days=100),end=datetime.now()):
     for iter in df_list:
         for currency, df in iter.items():
             df = df.copy()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
-            time = end - start
-            recent_data = df[df.index >= time]
+            recent_data = df[(df.index >= start) & (df.index <= end)]
 
             for i in range(2, len(recent_data) - 2):
                 total_range = recent_data['High'][i] - recent_data['Low'][i]
