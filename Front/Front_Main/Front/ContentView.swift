@@ -1,43 +1,68 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedCurrencyPair = "chfpln"
+    let currencyPairs = ["chfpln", "eurpln", "gbppln", "jpypln", "nokpln", "usdpln"]
+    @State private var selectedCurrencyPair: String?
+    @State private var startDate = Date()
+    @State private var endDate = Date()
 
     var body: some View {
-        VStack {
-            Text("Investing App")
+        VStack(spacing: 20) {
+            Text("Aplikacja wspomagająca inwestycje")
                     .font(.largeTitle)
-                    .padding()
 
-            Image("dogecoin.png") // Użyj nazwy odpowiedniego obrazka
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 200, height: 200)
+            Divider()
 
-            Picker("Wybierz parę walut", selection: $selectedCurrencyPair) {
-                Text("CHF/PLN").tag("chfpln")
-                Text("EUR/PLN").tag("eurpln")
-                Text("GBP/PLN").tag("gbppln")
-                Text("JPY/PLN").tag("jpypln")
-                Text("NOK/PLN").tag("nokpln")
-                Text("USD/PLN").tag("usdpln")
+            Text("Wybierz parę walut")
+                    .font(.headline)
+
+            HStack {
+                ForEach(currencyPairs, id: \.self) { currencyPair in
+                    Button(action: {
+                        selectedCurrencyPair = currencyPair
+                    }) {
+                        Text(currencyPair)
+                                .foregroundColor(selectedCurrencyPair == currencyPair ? .white : .blue)
+                                .padding()
+                                .background(selectedCurrencyPair == currencyPair ? Color.blue : Color.clear)
+                                .cornerRadius(8)
+                    }
+                            .buttonStyle(PlainButtonStyle())
+                }
             }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding()
+
+            Divider()
+
+            Text("Wybierz zakres dat")
+                    .font(.headline)
+
+            HStack {
+                DatePicker("Data początkowa", selection: $startDate, displayedComponents: .date)
+                        .labelsHidden()
+                        .datePickerStyle(CompactDatePickerStyle())
+
+                DatePicker("Data końcowa", selection: $endDate, displayedComponents: .date)
+                        .labelsHidden()
+                        .datePickerStyle(CompactDatePickerStyle())
+            }
+
+            Divider()
 
             Button(action: {
-                // Tutaj możesz dodać kod do generowania wykresów
+                // Tutaj dodaj logikę generowania wykresu dla danej pary walut
             }) {
-                Text("Generuj wykresy")
-                        .font(.headline)
+                Text("Generuj wykres")
+                        .foregroundColor(.white)
                         .padding()
                         .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(8)
             }
+                    .buttonStyle(PlainButtonStyle())
 
             Spacer()
         }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
     }
 }
 
