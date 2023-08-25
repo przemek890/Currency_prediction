@@ -17,7 +17,7 @@ struct ContentView: View {
                     .font(.headline)
 
             HStack {
-                ForEach(currencyPairs, id: \.self) { currencyPair in
+                ForEach(currency_pairs, id: \.self) { currencyPair in
                     Button(action: {
                         selectedCurrencyPair = currencyPair
                     }) {
