@@ -1,4 +1,4 @@
-# Currency_prediction [Demo]
+# Currency_prediction [Early Demo]
 
 ## Exchange rates come from https://stooq.pl
 
