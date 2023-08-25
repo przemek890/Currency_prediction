@@ -49,6 +49,11 @@ struct ContentView: View {
 
             Divider()
 
+            Image("coin")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+
             Button(action: {
                 DispatchQueue.global().async {
                     if let currency = selectedCurrencyPair {
@@ -69,7 +74,7 @@ struct ContentView: View {
                         Alert(title: Text("Error"), message: Text("Selected currency is nil!"), dismissButton: .default(Text("OK")))
                     }
 
-            Spacer()
+
         }
                 .frame(width: 1000, height: 500)
                 .padding()
