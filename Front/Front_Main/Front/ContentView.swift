@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    let currencyPairs = ["chfpln", "eurpln", "gbppln", "jpypln", "nokpln", "usdpln"]
     @State private var selectedCurrencyPair: String!
     @State private var startDate = Date()
     @State private var endDate = Date()
@@ -56,7 +55,7 @@ struct ContentView: View {
 
             Button(action: {
                 DispatchQueue.global().async {
-                    if let currency = selectedCurrencyPair {
+                    if let currency = selectedCurrencyPair, endDate >= startDate {
                         run_python_script(currency: currency, date_start: format_date(date: startDate), date_end: format_date(date: endDate))
                     } else {
                         showAlert = true
@@ -71,7 +70,7 @@ struct ContentView: View {
             }
                     .buttonStyle(PlainButtonStyle())
                     .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Error"), message: Text("Selected currency is nil!"), dismissButton: .default(Text("OK")))
+                        Alert(title: Text("Error"), message: Text("Input mismatch error!"), dismissButton: .default(Text("OK")))
                     }
 
 
