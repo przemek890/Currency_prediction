@@ -27,6 +27,7 @@ def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=dat
     plt.savefig(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}/Correlation_matrix_{start.date()}_{end.date()}.pdf")
 
     plt.show()
+    plt.close()
 def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=100),end=datetime.now()):
 
     for iter in df_list:
@@ -66,4 +67,5 @@ def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=1
 
             plt.grid()
             plt.show()
+            plt.close()
 

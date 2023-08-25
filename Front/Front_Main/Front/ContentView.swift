@@ -2,18 +2,19 @@ import SwiftUI
 
 struct ContentView: View {
     let currencyPairs = ["chfpln", "eurpln", "gbppln", "jpypln", "nokpln", "usdpln"]
-    @State private var selectedCurrencyPair: String?
+    @State private var selectedCurrencyPair: String!
     @State private var startDate = Date()
     @State private var endDate = Date()
+    @State private var showAlert = false
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Aplikacja wspomagająca inwestycje")
+            Text("An application supporting investments")
                     .font(.largeTitle)
 
             Divider()
 
-            Text("Wybierz parę walut")
+            Text("Select a pair of currencies")
                     .font(.headline)
 
             HStack {
@@ -33,15 +34,15 @@ struct ContentView: View {
 
             Divider()
 
-            Text("Wybierz zakres dat")
+            Text("Select a date range")
                     .font(.headline)
 
             HStack {
-                DatePicker("Data początkowa", selection: $startDate, displayedComponents: .date)
+                DatePicker("Starting date", selection: $startDate, displayedComponents: .date)
                         .labelsHidden()
                         .datePickerStyle(CompactDatePickerStyle())
 
-                DatePicker("Data końcowa", selection: $endDate, displayedComponents: .date)
+                DatePicker("End date", selection: $endDate, displayedComponents: .date)
                         .labelsHidden()
                         .datePickerStyle(CompactDatePickerStyle())
             }
@@ -49,19 +50,28 @@ struct ContentView: View {
             Divider()
 
             Button(action: {
-                // Tutaj dodaj logikę generowania wykresu dla danej pary walut
+                DispatchQueue.global().async {
+                    if let currency = selectedCurrencyPair {
+                        run_python_script(currency: currency, date_start: format_date(date: startDate), date_end: format_date(date: endDate))
+                    } else {
+                        showAlert = true
+                    }
+                }
             }) {
-                Text("Generuj wykres")
+                Text("Generate chart")
                         .foregroundColor(.white)
                         .padding()
                         .background(Color.blue)
                         .cornerRadius(8)
             }
                     .buttonStyle(PlainButtonStyle())
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Error"), message: Text("Selected currency is nil!"), dismissButton: .default(Text("OK")))
+                    }
 
             Spacer()
         }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(width: 1000, height: 500)
                 .padding()
     }
 }

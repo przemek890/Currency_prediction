@@ -17,11 +17,14 @@ def get_data(currencies):
             with open(file_path, "wb") as csv_file:
                 csv_file.write(csv_content)
             print(f"The CSV file was successfully downloaded and saved as {currency}_{datetime.now().date()}.csv")
-def create_dataframe_list_from_csv(path):
+def create_dataframe_list_from_csv(path,currencies):
     dataframe_list = []                             # zwracamy słownik postaci 'nokpln' : df itp...
 
     for filename in os.listdir(path):
-        if filename.endswith(".csv"):
+        new_name = os.path.splitext(filename)[0]
+        new_name = new_name.split('_')[0]
+
+        if filename.endswith(".csv") and new_name in currencies:
             file_path = os.path.join(path, filename)
             df = pd.read_csv(file_path)
             new_column_names = {
@@ -32,8 +35,6 @@ def create_dataframe_list_from_csv(path):
                 'Zamkniecie': 'Close'
             }
             df.rename(columns=new_column_names, inplace=True)
-            new_name = os.path.splitext(filename)[0]
-            new_name = new_name.split('_')[0]
             word = {new_name : df}
             dataframe_list.append(word)
 
