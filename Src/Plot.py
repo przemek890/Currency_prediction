@@ -4,6 +4,7 @@ import seaborn as sns
 import pandas as pd
 import mplfinance as mpf
 import os
+import pyautogui
 """"""""""""""
 def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=datetime.now()):   # okres od wskazanej daty
     new_df = pd.DataFrame()
@@ -18,7 +19,7 @@ def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=dat
             new_df[f'{currency}'] = (filtered_df['Open'] + filtered_df['Close']) / 2
 
     correlation_matrix = new_df.corr()
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True)
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True,figscale=0.75)
     plt.title(f'Exchange rate correlation from {start.date()} to {end.date()}')
 
     if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
@@ -28,8 +29,7 @@ def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=dat
 
     plt.show()
     plt.close()
-def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=100),end=datetime.now()):
-
+def candle_chart(df_list, patterns, colors, start=datetime.now() - timedelta(days=100), end=datetime.now()):
     for iter in df_list:
         for currency, df in iter.items():
 
@@ -38,7 +38,7 @@ def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=1
             df.set_index('Date', inplace=True)
             df_time = df[(df.index >= start) & (df.index <= end)]
 
-            fig, axes =  mpf.plot(df_time, type='candle', title=f'\n\nCandlestick Chart - {currency} -> {start.date()}_{end.date()}',returnfig=True)
+            fig, axes = mpf.plot(df_time, type='candle', title=f'\n\nCandlestick Chart - {currency} -> {start.date()}_{end.date()}', returnfig=True, figscale=0.75)
 
             for pattern in patterns:
                 pattern_date = pd.to_datetime(pattern['Date'])
@@ -49,16 +49,16 @@ def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=1
                 avg = 0.5 * (df['High'].max() + df['Low'].min())
 
                 axes[0].annotate(f"{pattern['Name']}\n"
-                                     f"{pattern['Low']}-{pattern['High']}\n"
-                                     f"{pattern['Prediction']}\n"
-                                     f"{pattern['Date']}",
-                                     xy=(candle_x, candle_y),
-                                     xytext=(candle_x, candle_y + 0.005 * avg),
-                                     fontsize=5,
-                                     ha="center",
-                                     fontweight='bold',
-                                     color=colors[pattern['Name']],
-                                     arrowprops=dict(facecolor=colors[pattern['Name']], arrowstyle='fancy,tail_width=0.75'))
+                                 f"{pattern['Low']}-{pattern['High']}\n"
+                                 f"{pattern['Prediction']}\n"
+                                 f"{pattern['Date']}",
+                                 xy=(candle_x, candle_y),
+                                 xytext=(candle_x, candle_y + 0.005 * avg),
+                                 fontsize=5,
+                                 ha="center",
+                                 fontweight='bold',
+                                 color=colors[pattern['Name']],
+                                 arrowprops=dict(facecolor=colors[pattern['Name']], arrowstyle='fancy,tail_width=0.75'))
 
             if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
                 os.makedirs(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}")
@@ -68,4 +68,3 @@ def candle_chart(df_list,patterns,colors,start=datetime.now() - timedelta(days=1
             plt.grid()
             plt.show()
             plt.close()
-
