@@ -7,8 +7,10 @@ import os
 import pyautogui
 """"""""""""""
 def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=datetime.now()):   # okres od wskazanej daty
-    new_df = pd.DataFrame()
 
+    if len(df_list) < 2: return # Bez sensu tworzyc macierz korelacji 1x1
+
+    new_df = pd.DataFrame()
     for iter in df_list:
         for currency, df in iter.items():
             df = df.copy()
@@ -19,13 +21,13 @@ def matrix_correlaton(df_list,start=datetime.now() - timedelta(days=100),end=dat
             new_df[f'{currency}'] = (filtered_df['Open'] + filtered_df['Close']) / 2
 
     correlation_matrix = new_df.corr()
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True,figscale=0.75)
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True)
     plt.title(f'Exchange rate correlation from {start.date()} to {end.date()}')
 
-    if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
-        os.makedirs(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}")
+    if not os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}"):
+        os.makedirs(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}")
 
-    plt.savefig(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}/Correlation_matrix_{start.date()}_{end.date()}.pdf")
+    plt.savefig(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/Correlation_matrix_{start.date()}_{end.date()}.pdf")
 
     plt.show()
     plt.close()
@@ -60,9 +62,9 @@ def candle_chart(df_list, patterns, colors, start=datetime.now() - timedelta(day
                                  color=colors[pattern['Name']],
                                  arrowprops=dict(facecolor=colors[pattern['Name']], arrowstyle='fancy,tail_width=0.75'))
 
-            if not os.path.exists(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}"):
-                os.makedirs(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}")
-            output_path = os.path.join(os.getcwd() + f"/Documents/Charts/{start.date()}_{end.date()}/Candlestick_Chart_{currency}_{start.date()}_{end.date()}.pdf")
+            if not os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}"):
+                os.makedirs(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}")
+            output_path = os.path.join(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/Candlestick_Chart_{currency}_{start.date()}_{end.date()}.pdf")
             plt.savefig(output_path)
 
             plt.grid()

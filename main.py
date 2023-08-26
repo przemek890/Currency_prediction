@@ -12,14 +12,16 @@ if __name__ == '__main__':
 
     get_data(currencies)                                                                       # Pobierz aktualne dane dotyczące kursów walut i zapisz [raz na dzien -> dla danej daty]
     df_list = create_dataframe_list_from_csv(os.getcwd() + '/Exchange_rates',currencies)       # Utwórz listę dataframe'ów z plików csv /// zwracamy słownik postaci 'nokpln' : df
-    create_currencies_raport(df_list)                                                          # Krótki raport o dataframe'ach
-    matrix_correlaton(df_list,date_start,date_end)                                             # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
+
+    matrix_correlaton(df_list)                                                                 # Korelacja par walut (kurs średni z otwarcia i zamkniecia)
 
     """Wyszukiwanie patternów w danym okresie czasowy"""
     dt = PatternDetector()
     dt.hangman(df_list)
     dt.hammer(df_list)
-    dt.create_patterns_raport()
+
+    create_currencies_raport(df_list)                                                          # Krótki raport o dataframe'ach
+    dt.create_patterns_raport()                                                                # Krótki raport o patternach
 
     candle_chart(df_list,dt.get_patterns(),dt.get_colors())                                    # Wykresy świecowe w danym okresie czasu
 

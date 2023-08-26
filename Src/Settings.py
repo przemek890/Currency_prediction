@@ -1,19 +1,32 @@
 import os
 import re
-def create_currencies_raport(df_list):
-    with open(os.getcwd() + '/Documents/Raports/currencies.txt', 'w') as report_file:
-        for iter in df_list:
-            for currency, df in iter.items():
-                report_file.write("-------------------------------------\n")
-                report_file.write("\n ---> Historical exchange rate " + currency + ':\n\n')
+from datetime import datetime, timedelta
+import pandas as pd
+def create_currencies_raport(df_list,start=datetime.now() - timedelta(days=100),end=datetime.now()):
+    if not os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}"):
+        os.makedirs(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}")
+    elif os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/currencies_description.txt"):
+        os.remove(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/currencies_description.txt")
 
-                df_str = str(df)
-                report_file.write(df_str + '\n\n')
+    for iter in df_list:
+        with open(os.getcwd() + f'/Documents/Files/{start.date()}_{end.date()}/currencies_description.txt', 'a+') as report_file:
+                for currency, df in iter.items():
+                    df = df.copy()
+                    df['Date'] = pd.to_datetime(df['Date'])
+                    df.set_index('Date', inplace=True)
+                    recent_data = df[(df.index >= start) & (df.index <= end)]
 
-                df_desc = df.describe()
-                report_file.write(str(df_desc) + '\n\n')
+                    report_file.write("-------------------------------------\n")
+                    report_file.write("\n ---> Historical exchange rate " + currency + ':\n\n')
 
-                report_file.write("-------------------------------------\n")
+                    df_str = str(recent_data)
+                    report_file.write(df_str + '\n\n')
+
+                    df_desc = recent_data.describe()
+                    report_file.write(str(df_desc) + '\n\n')
+
+                    report_file.write("-------------------------------------\n")
+
 def remove_all_files(folder_path,pattern):
     files = os.listdir(folder_path)
     for file_name in files:

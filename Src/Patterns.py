@@ -131,13 +131,19 @@ class PatternDetector:
                             'Prediction': 'Bessa'
                         })
 
-    def create_patterns_raport(self):
-        with open(os.getcwd() + '/Documents/Raports/patterns.txt', 'w') as report_file:
-            for iter in self._patterns:
-                report_file.write("-------------------------------------\n")
-                for key, value in iter.items():
-                    report_file.write(str(value) + '\n')
-                report_file.write("-------------------------------------\n")
+    def create_patterns_raport(self,start=datetime.now() - timedelta(days=100),end=datetime.now()):
+        if not os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}"):
+            os.makedirs(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}")
+        elif os.path.exists(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/patterns_description.txt"):
+            os.remove(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/patterns_description.txt")
+
+        for iter in self._patterns:
+            with open(os.getcwd() + f"/Documents/Files/{start.date()}_{end.date()}/patterns_description.txt", 'a+') as report_file:
+                for iter in self._patterns:
+                    report_file.write("-------------------------------------\n")
+                    for key, value in iter.items():
+                        report_file.write(str(value) + '\n')
+                    report_file.write("-------------------------------------\n")
 
     def get_patterns(self):
         return self._patterns

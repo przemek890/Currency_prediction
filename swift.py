@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 from Src.Data import get_data , create_dataframe_list_from_csv
-from Src.Plot import candle_chart
+from Src.Plot import matrix_correlaton, candle_chart
 from Src.Settings import create_currencies_raport
 from Src.Patterns import PatternDetector
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -25,16 +25,17 @@ else:
 
 get_data(currencies)
 df_list = create_dataframe_list_from_csv(os.getcwd() + "/Exchange_rates",currencies)
-create_currencies_raport(df_list)
 
 """Wyszukiwanie patternów w danym okresie czasowy"""
 dt = PatternDetector()
 dt.hangman(df_list,date_start,date_end)
 dt.hammer(df_list,date_start,date_end)
-dt.create_patterns_raport()
 
+create_currencies_raport(df_list,date_start,date_end)
+dt.create_patterns_raport(date_start,date_end)
+
+matrix_correlaton(df_list,date_start,date_end)
 candle_chart(df_list,dt.get_patterns(),dt.get_colors(),date_start,date_end)
 
-currencies.clear()
 
 
