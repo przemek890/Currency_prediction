@@ -2,7 +2,7 @@
 
 ## Exchange rates come from https://stooq.pl
 
-![CURRENCY_PREDICTION](Documents/currency_prediction.gif)
+![CURRENCY_PREDICTION](Documents/Gif/currency_prediction.gif)
 
 ### Configure the variables in the file <a href="https://github.com/przemek890/Currency_prediction/blob/master/Front/Front_Main/Front/Variables.swift#L11-L14">Variables</a> accordingly:
 > System shell used: <a href="https://github.com/przemek890/Currency_prediction/blob/master/Front/Front_Main/Front/Python.swift#L5">shell</a>
