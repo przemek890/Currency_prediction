@@ -8,11 +8,8 @@ from Src.Patterns import PatternDetector
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 if len(sys.argv) >= 4:
-    currencies = []
     program_path = sys.argv[0]
-    currency = ''.join(map(str, sys.argv[1]))
-    currencies.append(currency)
-    print(currencies)
+    currencies = sys.argv[1].split('_')
     date_start = pd.to_datetime(sys.argv[2])
     date_end = pd.to_datetime(sys.argv[3])
 

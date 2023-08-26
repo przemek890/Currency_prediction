@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedCurrencyPair: String!
+    @State private var selectedCurrencyPairs: [String] = []
     @State private var startDate = Date()
     @State private var endDate = Date()
     @State private var showAlert = false
@@ -19,12 +19,16 @@ struct ContentView: View {
             HStack {
                 ForEach(currency_pairs, id: \.self) { currencyPair in
                     Button(action: {
-                        selectedCurrencyPair = currencyPair
+                        if selectedCurrencyPairs.contains(currencyPair) {
+                            selectedCurrencyPairs.removeAll { $0 == currencyPair }
+                        } else {
+                            selectedCurrencyPairs.append(currencyPair)
+                        }
                     }) {
                         Text(currencyPair)
-                                .foregroundColor(selectedCurrencyPair == currencyPair ? .white : .blue)
+                                .foregroundColor(selectedCurrencyPairs.contains(currencyPair) ? .white : .blue)
                                 .padding()
-                                .background(selectedCurrencyPair == currencyPair ? Color.blue : Color.clear)
+                                .background(selectedCurrencyPairs.contains(currencyPair) ? Color.blue : Color.clear)
                                 .cornerRadius(8)
                     }
                             .buttonStyle(PlainButtonStyle())
@@ -55,8 +59,8 @@ struct ContentView: View {
 
             Button(action: {
                 DispatchQueue.global().async {
-                    if let currency = selectedCurrencyPair, endDate >= startDate {
-                        run_python_script(currency: currency, date_start: format_date(date: startDate), date_end: format_date(date: endDate))
+                    if !selectedCurrencyPairs.isEmpty && endDate >= startDate {
+                        run_python_script(currency: selectedCurrencyPairs, date_start: format_date(date: startDate), date_end: format_date(date: endDate))
                     } else {
                         showAlert = true
                     }
@@ -72,13 +76,12 @@ struct ContentView: View {
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Error"), message: Text("Input mismatch error!"), dismissButton: .default(Text("OK")))
                     }
-
-
         }
                 .frame(width: 1000, height: 500)
                 .padding()
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
