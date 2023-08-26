@@ -2,12 +2,12 @@ import Foundation
 
 func run_python_script(currency: [String], date_start: String, date_end: String) {
     let task = Process()
-    task.executableURL = URL(fileURLWithPath: shell)
+    task.executableURL = URL(fileURLWithPath: "/bin/bash")                                          // system shell used
 
-    let pythonScriptPath = swiftpy_path
-    let virtualenvPath = venv_python_path
+    let pythonScriptPath = "/Users/przemek899/Desktop/currency_prediction/swift.py"                 // path to swift.py file (don't change its location)
+    let virtualenvPath = "/Users/przemek899/Desktop/currency_prediction/venv/bin/python"            // path to python in virtual environment
 
-    task.currentDirectoryPath = currency_prediction_path
+    task.currentDirectoryPath = "/Users/przemek899/Desktop/currency_prediction"                     // path to the root directory of the project
 
 
     let currencyString = currency.joined(separator: "_")

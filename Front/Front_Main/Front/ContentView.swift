@@ -1,4 +1,6 @@
 import SwiftUI
+/////////////////
+let currency_pairs = ["chfpln", "eurpln", "gbppln", "jpypln", "nokpln", "usdpln"]       // currency pairs to choose from
 
 struct ContentView: View {
     @State private var selectedCurrencyPairs: [String] = []
